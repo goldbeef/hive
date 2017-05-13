@@ -16,7 +16,7 @@
 #include "hive.h"
 
 #ifdef _MSC_VER
-void daemon() {  } // do nothing !
+int daemon(int nochdir, int noclose) { }
 #endif
 
 hive_app* g_app = nullptr;
@@ -63,9 +63,9 @@ void hive_app::sleep_ms(int ms)
     ::sleep_ms(ms);
 }
 
-void hive_app::daemon()
+int hive_app::daemon(int nochdir, int noclose)
 {
-    ::daemon();
+    return ::daemon(nochdir, noclose);
 }
 
 void hive_app::register_signal(int n)
