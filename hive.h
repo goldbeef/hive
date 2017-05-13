@@ -31,6 +31,7 @@ public:
 private:
     uint64_t m_signal = 0;
     int32_t m_reload_time = 2000;
+	std::string m_entry;
 };
 
 extern hive_app* g_app;

@@ -41,6 +41,7 @@ EXPORT_LUA_FUNCTION(ignore_signal)
 EXPORT_LUA_FUNCTION(create_socket_mgr)
 EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
+EXPORT_LUA_STD_STR_R(m_entry)
 EXPORT_CLASS_END()
 
 time_t hive_app::get_file_time(const char* file_name)
@@ -153,6 +154,7 @@ void hive_app::run(const char filename[])
     luaL_openlibs(L);
     lua_push_object(L, this);
     lua_setglobal(L, "hive");
+	m_entry = filename;
     luaL_dostring(L, g_sandbox);
 
     lua_call_global_function(L, "import", std::tie(), filename);

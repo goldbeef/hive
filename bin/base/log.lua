@@ -24,7 +24,7 @@ function log_write(line)
 
     if log_file == nil then
         local date = os.date("*t", os.time());
-        local filename = string.format("%s_%02d%02d_%02d%02d%02d.log", log_filename, date.month, date.day, date.hour, date.min, date.sec);
+        local filename = string.format("%s_%d_%02d%02d_%02d%02d%02d.log", log_filename, date.year, date.month, date.day, date.hour, date.min, date.sec);
         log_file = io.open(filename, "w");
         if log_file == nil then
             return;
@@ -32,6 +32,7 @@ function log_write(line)
     end
 
     log_file:write(line);
+    log_file:flush();
     log_line_count = log_line_count + 1;
 end
 
