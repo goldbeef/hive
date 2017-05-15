@@ -16,7 +16,7 @@
 #include "hive.h"
 
 #ifdef _MSC_VER
-int daemon(int nochdir, int noclose) { }
+int daemon(int nochdir, int noclose) { return 0; }
 #endif
 
 hive_app* g_app = nullptr;
