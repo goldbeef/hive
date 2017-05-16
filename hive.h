@@ -16,7 +16,7 @@ public:
     int64_t get_time_ms();
     int64_t get_time_ns();
     void sleep_ms(int ms);
-    void daemon();
+	int daemon(int nochdir, int noclose);
     void register_signal(int n);
     void default_signal(int n);
     void ignore_signal(int n);
@@ -31,6 +31,7 @@ public:
 private:
     uint64_t m_signal = 0;
     int32_t m_reload_time = 2000;
+	std::string m_entry;
 };
 
 extern hive_app* g_app;
