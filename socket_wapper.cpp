@@ -133,20 +133,25 @@ lua_socket_node::lua_socket_node(uint32_t token, lua_State* L, std::shared_ptr<s
 
     m_mgr->set_accept_callback(token, [this](uint32_t steam_token)
     {
+		std::string err;
+		lua_guard g(m_lvm);
         auto stream = new lua_socket_node(steam_token, m_lvm, m_mgr, m_archiver, m_router);
-        if (!lua_call_object_function(m_lvm, this, "on_accept", std::tie(), stream))
-            delete stream;
+        lua_call_object_function(err, m_lvm, this, "on_accept", std::tie(), stream);
     });
 
     m_mgr->set_connect_callback(token, [this]()
     {
+		std::string err;
+		lua_guard g(m_lvm);
         m_mgr->get_remote_ip(m_token, m_ip);
-        lua_call_object_function(m_lvm, this, "on_connected");
+        lua_call_object_function(err, m_lvm, this, "on_connected");
     });
 
-    m_mgr->set_error_callback(token, [this](const char* err)
+    m_mgr->set_error_callback(token, [this](const char* txt)
     {
-        lua_call_object_function(m_lvm, this, "on_error", std::tie(), err);
+		std::string err;
+		lua_guard g(m_lvm);
+        lua_call_object_function(err, m_lvm, this, "on_error", std::tie(), txt);
     });
 
     m_mgr->set_package_callback(token, [this](char* data, size_t data_len)
@@ -341,6 +346,7 @@ void lua_socket_node::on_recv(char* data, size_t data_len)
 
 void lua_socket_node::on_call(char* data, size_t data_len)
 {
+	std::string err;
     lua_guard g(m_lvm);
 
     if (!lua_get_object_function(m_lvm, this, "on_call"))
@@ -350,7 +356,7 @@ void lua_socket_node::on_call(char* data, size_t data_len)
     if (!m_archiver->load(&param_count, m_lvm, (BYTE*)data, data_len))
         return;
 
-    lua_call_function(m_lvm, param_count, 0);
+    lua_call_function(err, m_lvm, param_count, 0);
 }
 
 int create_socket_mgr(lua_State* L)
