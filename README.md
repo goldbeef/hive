@@ -1,6 +1,6 @@
-# 关于`hive`
+# `hive`
 
-hive是一个基于LUA RPC的服务器集群基础框架.
+hive是一个基于LUA RPC的服务器集群基础框架,基于LUA 5.3.4构建,目前主要面向游戏服务端而设计.
 
 主要特性:
 
@@ -153,7 +153,6 @@ call_matchsvr("join_match", player_id, match_mode);
 
 ## TODO
 - 消息路由,目前完成了大部分
-- 异步DNS,目前只是简单的用了一个线程来解析域名,临时做法,预计会换成c-ares或者adns之类的.
 - 模块扩展,即如何方便的进行自定义扩展模块(dll,so之类)
 
 

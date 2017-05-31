@@ -30,6 +30,7 @@ static void on_signal(int signo)
 }
 
 EXPORT_CLASS_BEGIN(hive_app)
+EXPORT_LUA_FUNCTION(get_version)
 EXPORT_LUA_FUNCTION(get_file_time)
 EXPORT_LUA_FUNCTION(get_time_ms)
 EXPORT_LUA_FUNCTION(get_time_ns)
@@ -43,6 +44,14 @@ EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
 EXPORT_LUA_STD_STR_R(m_entry)
 EXPORT_CLASS_END()
+
+int hive_app::get_version(lua_State* L)
+{
+	lua_pushinteger(L, MAJOR_VERSION_NUMBER);
+	lua_pushinteger(L, MINOR_VERSION_NUMBER);
+	lua_pushinteger(L, REVISION_NUMBER);
+	return 3;
+}
 
 time_t hive_app::get_file_time(const char* file_name)
 {

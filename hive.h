@@ -7,11 +7,16 @@
 
 #include "luna.h"
 
+ const int MAJOR_VERSION_NUMBER = 0;
+ const int MINOR_VERSION_NUMBER = 1;
+ const int REVISION_NUMBER = 0;
+
 class hive_app final
 {
 public:
     hive_app() { }
     ~hive_app() { }
+	int get_version(lua_State* L);
     time_t get_file_time(const char* file_name);
     int64_t get_time_ms();
     int64_t get_time_ns();
