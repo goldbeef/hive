@@ -12,7 +12,7 @@ target_dir = ./bin
 src_dir_list = . lua lz4
 # 依赖库目录,多个目录用空格分开:
 lib_dir =
-# 本工程(如果)输出.a,.so文件的目录
+# 本工程(如果)输出.a,.so文件的目录,比如: ./lib
 lib_out =
 
 CC = gcc
@@ -29,13 +29,15 @@ CXXFLAGS = $(CFLAGS) -Wno-invalid-offsetof -Wno-deprecated-declarations -std=c++
 #----------------- 下面部分通常不用改 --------------------------
 
 ifeq ($(target_type), execute)
-linker = g++
 link_flags = -Wl,-rpath ./
 endif
 
 ifeq ($(target_type), dynamic_shared)
+CFLAGS += -fPIC
 link_flags = -shared -ldl -fPIC -lpthread
-after_link = cp -f $@ $(target_dir)
+ifneq ($(lib_out), )
+after_link = cp -f $@ $(lib_out)/
+endif
 endif
 
 ifeq ($(target_type), static_shared)
@@ -47,7 +49,7 @@ target = $(target_dir)/$(product)
 endif
 
 ifeq ($(target_type), dynamic_shared)
-target  = $(lib_out)/lib$(product).so
+target  = $(target_dir)/lib$(product).so
 endif
 
 ifeq ($(target_type), static_shared)
@@ -88,7 +90,7 @@ clear_o_list := $(wildcard $(clear_o_pattern))
 clear_d_list := $(wildcard $(clear_d_pattern))
 make_c2o_list := $(patsubst %.c, %.c.o, $(make_c_list))
 make_cpp2o_list := $(patsubst %.cpp, %.cpp.o, $(make_cpp_list))
-env_param = $(include_dir:%=-I%) $(define_macros:%=-D%)
+env_param := $(include_dir:%=-I%) $(define_macros:%=-D%)
 
 comp_c_echo = @echo gcc $< ...
 comp_cxx_echo = @echo g++ $< ...
