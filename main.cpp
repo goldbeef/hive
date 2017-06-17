@@ -15,7 +15,7 @@ int main(int argc, const char* argv[])
 
     if (argc < 2)
     {
-        printf("hive %d.%d.%d\nusage:\nhive program_entry.lua ...", MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
+        printf("hive %d.%d.%d\nusage:\nhive program_entry.lua ...\n", MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
         return 1;
     }
 
