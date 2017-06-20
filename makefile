@@ -20,8 +20,13 @@ CXX = g++
 CFLAGS = -m64
 
 OS := $(shell uname)
+
 ifeq ($(OS), Linux)
 CFLAGS += -DLUA_USE_LINUX
+endif
+
+ifeq ($(OS), Darwin)
+CFLAGS += -DLUA_USE_MACOSX
 endif
 
 CXXFLAGS = $(CFLAGS) -Wno-invalid-offsetof -Wno-deprecated-declarations -std=c++1y
@@ -29,7 +34,10 @@ CXXFLAGS = $(CFLAGS) -Wno-invalid-offsetof -Wno-deprecated-declarations -std=c++
 #----------------- 下面部分通常不用改 --------------------------
 
 ifeq ($(target_type), execute)
-link_flags = -Wl,-rpath ./
+link_flags = -Wl,-rpath ./ 
+ifeq ($(OS), Linux)
+link_flags += -Wl,-E
+endif
 endif
 
 ifeq ($(target_type), dynamic_shared)
