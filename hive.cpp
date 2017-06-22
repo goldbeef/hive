@@ -156,15 +156,24 @@ end
 )__";
 
 
-void hive_app::run(const char filename[])
+void hive_app::run(int argc, const char* argv[])
 {
     lua_State* L = luaL_newstate();
     int64_t last_check = ::get_time_ms();
+	const char* filename = argv[1];
 
     luaL_openlibs(L);
 	m_entry = filename;
     lua_push_object(L, this);
     lua_setglobal(L, "hive");
+	lua_newtable(L);
+	for (int i = 1; i < argc; i++)
+	{
+		lua_pushinteger(L, i - 1);
+		lua_pushstring(L, argv[i]);
+		lua_settable(L, -3);
+	}
+	lua_setfield(L, -2, "args");
     luaL_dostring(L, g_sandbox);
 
 	std::string err;
