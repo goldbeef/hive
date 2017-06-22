@@ -111,8 +111,6 @@ debug: build_prompt $(target)
 
 .PHONY: clean
 clean:
-	@echo rm $(target)
-	@rm -f $(target)
 	@echo rm "*.o" ...
 	@rm -f $(clear_o_list)
 	@echo rm "*.d" ...
