@@ -2,7 +2,7 @@ product = hive
 # execute, dynamic_shared, static_shared
 target_type = execute
 define_macros =
-include_dir = .
+include_dir = . lua
 # 依赖库列表,空格分开
 lib = dl pthread
 # 最终产品目录:
