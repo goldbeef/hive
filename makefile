@@ -2,7 +2,7 @@ product = hive
 # execute, dynamic_shared, static_shared
 target_type = execute
 define_macros =
-include_dir = . lua
+include_dir = .
 # 依赖库列表,空格分开
 lib = dl pthread
 # 最终产品目录:
@@ -34,7 +34,7 @@ CXXFLAGS = $(CFLAGS) -Wno-invalid-offsetof -Wno-deprecated-declarations -std=c++
 #----------------- 下面部分通常不用改 --------------------------
 
 ifeq ($(target_type), execute)
-link_flags = -Wl,-rpath ./ 
+link_flags = -Wl,-rpath ./
 ifeq ($(OS), Linux)
 link_flags += -Wl,-E
 endif

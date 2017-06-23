@@ -1,6 +1,6 @@
 # `hive`
 
-hive是一个基于LUA RPC的服务器集群基础框架,基于LUA 5.3.4构建,目前主要面向游戏服务端而设计.
+hive是一个基于LUA RPC的服务器简单框架,基于LUA 5.3.4.
 
 主要特性:
 
@@ -12,12 +12,11 @@ hive是一个基于LUA RPC的服务器集群基础框架,基于LUA 5.3.4构建,�
 
 ## 编译环境
 
-luna同时支持Windows, Linux, macOS三平台,但是编译器必须支持C++14.  
-我的开发环境如下(目前只支持64位,32位未经测试):
+luna同时支持Windows, Linux, MacOS三平台,编译器必须支持C++14.  
 
-- Windows: Visual studio 2015
-- macOS: Apple (GCC) LLVM 7.0.0
-- Linux: GCC 7.1
+- Windows: Visual studio 2015以上版本,需要自行编译lua的dll库,或者用win64目录下的库文件.
+- MacOS: 需要自行编译安装lua.
+- Linux: 需要自行编译安装lua.
 
 ## 文件沙盒及文件热加载
 
