@@ -5,9 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="lz4">
-      <UniqueIdentifier>{3cb0af72-b54b-4d69-b419-efe8cbdf8c84}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -18,43 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lz4\lz4.h">
-      <Filter>lz4</Filter>
-    </ClInclude>
     <ClInclude Include="luna.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="socket_helper.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_listener.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_mgr.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_mgr_impl.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_router.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_stream.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="socket_wapper.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="tools.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="var_int.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="io_buffer.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="lua_archiver.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="hive.h">
@@ -62,43 +26,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="lz4\lz4.c">
-      <Filter>lz4</Filter>
-    </ClCompile>
     <ClCompile Include="luna.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="socket_helper.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_listener.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_mgr.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_mgr_impl.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_router.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_stream.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="socket_wapper.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
     <ClCompile Include="tools.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="var_int.cpp">
-      <Filter>source</Filter>
-    </ClCompile>
-    <ClCompile Include="lua_archiver.cpp">
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="hive.cpp">

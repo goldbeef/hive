@@ -88,35 +88,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="hive.h" />
-    <ClInclude Include="io_buffer.h" />
-    <ClInclude Include="lua_archiver.h" />
     <ClInclude Include="luna.h" />
-    <ClInclude Include="lz4\lz4.h" />
-    <ClInclude Include="socket_helper.h" />
-    <ClInclude Include="socket_listener.h" />
-    <ClInclude Include="socket_mgr.h" />
-    <ClInclude Include="socket_mgr_impl.h" />
-    <ClInclude Include="socket_router.h" />
-    <ClInclude Include="socket_stream.h" />
-    <ClInclude Include="socket_wapper.h" />
     <ClInclude Include="tools.h" />
-    <ClInclude Include="var_int.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hive.cpp" />
-    <ClCompile Include="lua_archiver.cpp" />
     <ClCompile Include="luna.cpp" />
-    <ClCompile Include="lz4\lz4.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="socket_helper.cpp" />
-    <ClCompile Include="socket_listener.cpp" />
-    <ClCompile Include="socket_mgr.cpp" />
-    <ClCompile Include="socket_mgr_impl.cpp" />
-    <ClCompile Include="socket_router.cpp" />
-    <ClCompile Include="socket_stream.cpp" />
-    <ClCompile Include="socket_wapper.cpp" />
     <ClCompile Include="tools.cpp" />
-    <ClCompile Include="var_int.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
