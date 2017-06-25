@@ -1,11 +1,15 @@
-#!/usr/bin/hive
+#!./hive
 
-import("base/log.lua");
+require("base/log");
+require("base/tree");
+lbus = require("lbus");
+
+mgr = mgr or lbus.create_socket_mgr(1000);
 
 ct = ct or 0;
 
 function hive.run()
-    hive.sleep_ms(1000);
+    mgr.wait(1000);
 
     print("ct="..ct);
 	log_debug("ct=%d", ct);

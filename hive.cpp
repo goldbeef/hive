@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** repository: https://github.com/trumanzhao/luna
 ** trumanzhao, 2017-05-13, trumanzhao@foxmail.com
 */
@@ -10,10 +10,8 @@
 #include <locale>
 #include <stdint.h>
 #include <signal.h>
-#include "tools.h"
-#include "socket_mgr.h"
-#include "socket_wapper.h"
 #include "hive.h"
+#include "tools.h"
 
 #ifdef _MSC_VER
 int daemon(int nochdir, int noclose) { return 0; }
@@ -39,7 +37,6 @@ EXPORT_LUA_FUNCTION(daemon)
 EXPORT_LUA_FUNCTION(register_signal)
 EXPORT_LUA_FUNCTION(default_signal)
 EXPORT_LUA_FUNCTION(ignore_signal)
-EXPORT_LUA_FUNCTION(create_socket_mgr)
 EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
 EXPORT_LUA_STD_STR_R(m_entry)
@@ -47,10 +44,10 @@ EXPORT_CLASS_END()
 
 int hive_app::get_version(lua_State* L)
 {
-	lua_pushinteger(L, MAJOR_VERSION_NUMBER);
-	lua_pushinteger(L, MINOR_VERSION_NUMBER);
-	lua_pushinteger(L, REVISION_NUMBER);
-	return 3;
+    lua_pushinteger(L, MAJOR_VERSION_NUMBER);
+    lua_pushinteger(L, MINOR_VERSION_NUMBER);
+    lua_pushinteger(L, REVISION_NUMBER);
+    return 3;
 }
 
 time_t hive_app::get_file_time(const char* file_name)
@@ -91,11 +88,6 @@ void hive_app::default_signal(int n)
 void hive_app::ignore_signal(int n)
 {
     signal(n, SIG_IGN);
-}
-
-int hive_app::create_socket_mgr(lua_State* L)
-{
-    return ::create_socket_mgr(L);
 }
 
 void hive_app::set_signal(int n)
@@ -160,30 +152,31 @@ void hive_app::run(int argc, const char* argv[])
 {
     lua_State* L = luaL_newstate();
     int64_t last_check = ::get_time_ms();
-	const char* filename = argv[1];
+    const char* filename = argv[1];
 
     luaL_openlibs(L);
-	m_entry = filename;
+    m_entry = filename;
+    lua_push_object(L, this);
     lua_push_object(L, this);
     lua_setglobal(L, "hive");
-	lua_newtable(L);
-	for (int i = 1; i < argc; i++)
-	{
-		lua_pushinteger(L, i - 1);
-		lua_pushstring(L, argv[i]);
-		lua_settable(L, -3);
-	}
-	lua_setfield(L, -2, "args");
+    lua_newtable(L);
+    for (int i = 1; i < argc; i++)
+    {
+        lua_pushinteger(L, i - 1);
+        lua_pushstring(L, argv[i]);
+        lua_settable(L, -3);
+    }
+    lua_setfield(L, -2, "args");
     luaL_dostring(L, g_sandbox);
 
-	std::string err;
-	int top = lua_gettop(L);
+    std::string err;
+    int top = lua_gettop(L);
 
-	lua_call_global_function(err, L, "import", std::tie(), filename);
+    lua_call_global_function(err, L, "import", std::tie(), filename);
 
     while (lua_get_object_function(L, this, "run"))
     {
-		lua_call_function(err, L, 0, 0);
+        lua_call_function(err, L, 0, 0);
 
         int64_t now = ::get_time_ms();
         if (now > last_check + m_reload_time)
@@ -191,7 +184,7 @@ void hive_app::run(int argc, const char* argv[])
             lua_call_object_function(err, L, this, "reload");
             last_check = now;
         }
-		lua_settop(L, top);
+        lua_settop(L, top);
     }
 
     lua_close(L);

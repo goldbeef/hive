@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** repository: https://github.com/trumanzhao/luna
 ** trumanzhao, 2017-05-13, trumanzhao@foxmail.com
 */
@@ -16,16 +16,15 @@ class hive_app final
 public:
     hive_app() { }
     ~hive_app() { }
-	int get_version(lua_State* L);
+    int get_version(lua_State* L);
     time_t get_file_time(const char* file_name);
     int64_t get_time_ms();
     int64_t get_time_ns();
     void sleep_ms(int ms);
-	int daemon(int nochdir, int noclose);
+    int daemon(int nochdir, int noclose);
     void register_signal(int n);
     void default_signal(int n);
     void ignore_signal(int n);
-    int create_socket_mgr(lua_State* L);
 
 public:
     void __gc() { } // custom gc, just do nothing
@@ -36,7 +35,7 @@ public:
 private:
     uint64_t m_signal = 0;
     int32_t m_reload_time = 2000;
-	std::string m_entry;
+    std::string m_entry;
 };
 
 extern hive_app* g_app;
