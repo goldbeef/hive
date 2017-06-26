@@ -25,7 +25,8 @@ public:
     void register_signal(int n);
     void default_signal(int n);
     void ignore_signal(int n);
-
+	int archive_save(lua_State* L);
+	int archive_load(lua_State* L);
 public:
     void __gc() { } // custom gc, just do nothing
     void set_signal(int n);
@@ -34,7 +35,9 @@ public:
     DECLARE_LUA_CLASS(hive_app);
 private:
     uint64_t m_signal = 0;
-    int32_t m_reload_time = 2000;
+    int m_reload_time = 2000;
+	int m_archive_buffer_size = USHRT_MAX;
+	int m_archive_lz_threshold = INT_MAX;
     std::string m_entry;
 };
 

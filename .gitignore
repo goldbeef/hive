@@ -44,3 +44,6 @@
 .DS_Store
 *.opendb
 *.db
+*.ipdb
+*.iobj
+*.suo

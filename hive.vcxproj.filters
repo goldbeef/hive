@@ -13,6 +13,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="lz4">
+      <UniqueIdentifier>{ec7cc21a-567d-4322-bf12-50acdf54db7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="luna.h">
@@ -22,6 +25,15 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="hive.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="lua_archiver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="lz4\lz4.h">
+      <Filter>lz4</Filter>
+    </ClInclude>
+    <ClInclude Include="var_int.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -36,6 +48,15 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="hive.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="lua_archiver.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="lz4\lz4.c">
+      <Filter>lz4</Filter>
+    </ClCompile>
+    <ClCompile Include="var_int.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
