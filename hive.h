@@ -25,8 +25,6 @@ public:
     void register_signal(int n);
     void default_signal(int n);
     void ignore_signal(int n);
-	int archive_save(lua_State* L);
-	int archive_load(lua_State* L);
 public:
     void __gc() { } // custom gc, just do nothing
     void set_signal(int n);

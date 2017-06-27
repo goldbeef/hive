@@ -12,7 +12,6 @@
 #include <signal.h>
 #include "hive.h"
 #include "tools.h"
-#include "lua_archiver.h"
 
 #ifdef _MSC_VER
 int daemon(int nochdir, int noclose) { return 0; }
@@ -38,8 +37,6 @@ EXPORT_LUA_FUNCTION(daemon)
 EXPORT_LUA_FUNCTION(register_signal)
 EXPORT_LUA_FUNCTION(default_signal)
 EXPORT_LUA_FUNCTION(ignore_signal)
-EXPORT_LUA_FUNCTION(archive_save)
-EXPORT_LUA_FUNCTION(archive_load)
 EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
 EXPORT_LUA_INT(m_archive_buffer_size)
@@ -100,36 +97,6 @@ void hive_app::set_signal(int n)
     uint64_t mask = 1;
     mask <<= n;
     m_signal |= mask;
-}
-
-int hive_app::archive_save(lua_State* L)
-{
-	int top = lua_gettop(L);
-	size_t len = 0;
-	lua_archiver ar(m_archive_buffer_size, m_archive_lz_threshold);
-	char* data = (char*)ar.save(&len, L, 1, top);
-	if (data == nullptr)
-	{
-		lua_pushnil(L);
-		return 1;
-	}
-	lua_pushlstring(L, data, len);
-	return 1;
-}
-
-int hive_app::archive_load(lua_State* L)
-{
-	int type = lua_type(L, 1);
-	if (type != LUA_TSTRING)
-	{
-		lua_pushnil(L);
-		return 1;
-	}
-
-	size_t len = 0;
-	const char* data = lua_tolstring(L, 1, &len);
-	lua_archiver ar(m_archive_buffer_size, m_archive_lz_threshold);
-	return ar.load(L, data, len);
 }
 
 static const char* g_sandbox = u8R"__(

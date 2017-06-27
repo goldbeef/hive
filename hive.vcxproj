@@ -88,20 +88,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="hive.h" />
-    <ClInclude Include="lua_archiver.h" />
     <ClInclude Include="luna.h" />
-    <ClInclude Include="lz4\lz4.h" />
     <ClInclude Include="tools.h" />
-    <ClInclude Include="var_int.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hive.cpp" />
-    <ClCompile Include="lua_archiver.cpp" />
     <ClCompile Include="luna.cpp" />
-    <ClCompile Include="lz4\lz4.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tools.cpp" />
-    <ClCompile Include="var_int.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
