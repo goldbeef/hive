@@ -79,7 +79,7 @@ int hive_app::daemon(int nochdir, int noclose)
 
 void hive_app::register_signal(int n)
 {
-    signal(n, SIG_DFL);
+    signal(n, on_signal);
 }
 
 void hive_app::default_signal(int n)
