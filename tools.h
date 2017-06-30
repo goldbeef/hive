@@ -80,54 +80,6 @@ inline uint64_t get_thread_id() { return GetCurrentThreadId(); }
 inline uint64_t get_thread_id() { return (uint64_t)pthread_self(); }
 #endif
 
-
-#define FAILED_JUMP(C)  \
-    do  \
-    {   \
-        if (!(C)) goto Exit0; \
-    } while (0)
-
-#define SAFE_FREE(p)    \
-    do  \
-    {   \
-        if (p)  \
-        {   \
-            free(p);    \
-            (p) = nullptr;  \
-        }   \
-    } while (0)
-
-#define SAFE_DELETE(p)  \
-    do  \
-    {   \
-        if (p)  \
-        {   \
-            delete (p);    \
-            (p) = nullptr;  \
-        }   \
-    } while (0)
-
-#define SAFE_DELETE_ARRAY(p)    \
-    do  \
-    {   \
-        if (p)  \
-        {   \
-            delete[] (p);    \
-            (p) = nullptr;  \
-        }   \
-    } while (0)
-
-#define SAFE_RELEASE(p) \
-    do  \
-    {   \
-        if (p)  \
-        {   \
-            (p)->release();    \
-            (p) = nullptr;  \
-        }   \
-    } while (0)
-
-
 #if defined(__linux) || defined(__APPLE__)
 template <typename T, int N>
 constexpr int _countof(T(&_array)[N]) { return N; }

@@ -28,6 +28,7 @@ public:
 public:
     void __gc() { } // custom gc, just do nothing
     void set_signal(int n);
+	void dump_error(const std::string& err);
     void run(int argc, const char* argv[]);
 
     DECLARE_LUA_CLASS(hive_app);

@@ -150,6 +150,22 @@ end
 )__";
 
 
+void hive_app::dump_error(const std::string& err)
+{
+	char path[512];
+	int ret = snprintf(path, sizeof(path), "%s.err", m_entry.c_str());
+	if (ret > 0 && ret < (int)sizeof(path))
+	{
+		FILE* file = fopen(path, "w");
+		if (file != nullptr)
+		{
+			fwrite(err.c_str(), err.length(), 1, file);
+			fclose(file);
+		}
+	}
+	exit(1);
+}
+
 void hive_app::run(int argc, const char* argv[])
 {
     lua_State* L = luaL_newstate();
@@ -174,16 +190,19 @@ void hive_app::run(int argc, const char* argv[])
     std::string err;
     int top = lua_gettop(L);
 
-    lua_call_global_function(err, L, "import", std::tie(), filename);
+    if (!lua_call_global_function(err, L, "import", std::tie(), filename))
+		dump_error(err);
 
     while (lua_get_object_function(L, this, "run"))
     {
-        lua_call_function(err, L, 0, 0);
+        if(!lua_call_function(err, L, 0, 0))
+			dump_error(err);
 
         int64_t now = ::get_time_ms();
         if (now > last_check + m_reload_time)
         {
-            lua_call_object_function(err, L, this, "reload");
+            if (!lua_call_object_function(err, L, this, "reload"))
+				dump_error(err);
             last_check = now;
         }
         lua_settop(L, top);
