@@ -28,15 +28,15 @@ public:
 public:
     void __gc() { } // custom gc, just do nothing
     void set_signal(int n);
-	void dump_error(const std::string& err);
+    void dump_error(const std::string& err);
     void run(int argc, const char* argv[]);
 
     DECLARE_LUA_CLASS(hive_app);
 private:
     uint64_t m_signal = 0;
     int m_reload_time = 2000;
-	int m_archive_buffer_size = USHRT_MAX;
-	int m_archive_lz_threshold = INT_MAX;
+    int m_archive_buffer_size = USHRT_MAX;
+    int m_archive_lz_threshold = INT_MAX;
     std::string m_entry;
 };
 

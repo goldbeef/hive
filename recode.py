@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import io, os, shutil, sys
+import io, os, re, shutil, sys
 import chardet
 import codecs
 import datetime
@@ -24,32 +24,40 @@ def recode(path):
         lines[i] = lines[i].rstrip().expandtabs(4) + "\n";
     io.open(path, "w", encoding="utf-8-sig").writelines(lines);
 
+def load_config():
+	lines = open(".git/config").readlines();
+	find_section = False;
+	for line in lines:
+		line = line.strip(" \t\r\n");
+		if line == "[remote \"origin\"]":
+			find_section = True;
+		elif find_section:
+			tokens = line.split("=");
+			return tokens[1].strip();
+	return None;
+
+rep_name = load_config();
+if rep_name == None:
+	sys.exit("没找到.git配置,必须在git仓库根目录运行!");
+
 sign = list();
 sign.append(u"/*");
-sign.append(u"** repository: https://github.com/trumanzhao/luna");
+sign.append(u"** repository: %s" % rep_name);
 sign.append(u"** trumanzhao, %s, trumanzhao@foxmail.com" % today);
 sign.append(u"*/");
 sign.append(u"");
 
-def signed(lines):
-    if len(lines) < len(sign):
-        return False;
-    if lines[0].rstrip() == sign[0] and lines[1].rstrip() == sign[1]:
-        return True;
-    return False;
-
 def sign_file(path):
     recode(path);
-
     lines = io.open(path, "r", encoding="utf-8-sig").readlines();
-    if signed(lines):
+    if  len(lines) > 2 and re.match(".+repository.+github.+", lines[1]):
         print("%s 已签名!" % path);
         return;
 
     for i in range(0, len(sign)):
         lines.insert(i, sign[i] + u"\n");
 
-    print("签名: %s" % path);
+    print("加签名: %s" % path);
     io.open(path, "w", encoding="utf-8").writelines(lines);
 
 root = ".";
@@ -59,3 +67,4 @@ for item in items:
     ext = os.path.splitext(path)[1].lower();
     if ext == ".cpp" or ext == ".h":
         sign_file(path);
+
