@@ -137,13 +137,12 @@ function import(filename)
 end
 
 hive.reload = function()
+    local now = os.time();
     for filename, filenode in pairs(hive.files) do
         local filetime = hive.get_file_time(filename);
-        if filetime ~= filenode.time then
+        if filetime ~= filenode.time and filetime ~= 0 and now > filetime + 1 then
             filenode.time = filetime;
-            if filetime ~= 0 then
-                do_load(filename, filenode.env);
-            end
+            do_load(filename, filenode.env);
         end
     end
 end
