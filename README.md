@@ -1,6 +1,6 @@
 # `hive`
 
-hive是一个LUA的应用框架,目前基于LUA 5.3.4.  
+hive是一个简单的LUA应用框架,目前基于LUA 5.3.4.  
 主要提供了文件沙盒,文件热加载以及一些基础的服务程序底层支持.  
 
 ## 编译环境
@@ -15,6 +15,7 @@ luna同时支持Windows, Linux, MacOS三平台,编译器必须支持C++14.
 
 在hive中,用户主要通过import函数加载lua文件.
 - import为每个文件创建了一个沙盒环境,这使得各个文件中的变量名不会冲突.
+- 通过import加载文件时,可以通过环境变量设置根路径,如: `LUA_ROOT=/data/script/`
 - 在需要的地方,用户也可以同时使用require加载所需文件.
 - 多次import同一个文件,实际上只会加重一次,import返回的是文件的环境表.
 - 文件时间戳变化是,会自动重新加载.
@@ -38,5 +39,10 @@ function hive.run()
     hive.sleep_ms(2000);	
 end
 ```
+
+## 错误处理
+
+一旦`hive.run`函数执行时抛出错误,hive将立即退出,并将错误信息写入entry.lua.err文件中.  
+这里entry.lua指的是入口文件的文件名,建议一般的服务程序在`hive.run`函数中自行捕获错误.
 
 

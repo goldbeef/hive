@@ -104,8 +104,8 @@ hive.files = {};
 hive.meta = {__index=function(t, k) return _G[k]; end};
 hive.print = print;
 
-local do_load = function(filename, env)
-    local trunk, msg = loadfile(filename, "bt", env);
+local do_load = function(filename, real_path, env)
+    local trunk, msg = loadfile(real_path, "bt", env);
     if not trunk then
         hive.print(string.format("load file: %s ... ... [failed]", filename));
         hive.print(msg);
@@ -129,27 +129,30 @@ function import(filename)
         return file_module.env;
     end
 
+	local root_path = os.getenv("LUA_ROOT");
+	local real_path = root_path and root_path..filename or filename;
+
     local env = {};
     setmetatable(env, hive.meta);
-    hive.files[filename] = {time=hive.get_file_time(filename), env=env };
+    hive.files[filename] = {time=hive.get_file_time(real_path), env=env, path=real_path};
 
-    return do_load(filename, env);
+    return do_load(filename, real_path, env);
 end
 
 hive.reload = function()
     local now = os.time();
     for filename, filenode in pairs(hive.files) do
-        local filetime = hive.get_file_time(filename);
+        local filetime = hive.get_file_time(filenode.path);
         if filetime ~= filenode.time and filetime ~= 0 and now > filetime + 1 then
             filenode.time = filetime;
-            do_load(filename, filenode.env);
+            do_load(filename, filenode.path, filenode.env);
         end
     end
 end
 )__";
 
 
-void hive_app::dump_error(const std::string& err)
+void hive_app::error_exit(const std::string& err)
 {
     char path[512];
     int ret = snprintf(path, sizeof(path), "%s.err", m_entry.c_str());
@@ -189,19 +192,17 @@ void hive_app::run(int argc, const char* argv[])
     std::string err;
     int top = lua_gettop(L);
 
-    if (!lua_call_global_function(err, L, "import", std::tie(), filename))
-        dump_error(err);
+    lua_call_global_function(err, L, "import", std::tie(), filename);
 
     while (lua_get_object_function(L, this, "run"))
     {
         if(!lua_call_function(err, L, 0, 0))
-            dump_error(err);
+            error_exit(err);
 
         int64_t now = ::get_time_ms();
         if (now > last_check + m_reload_time)
         {
-            if (!lua_call_object_function(err, L, this, "reload"))
-                dump_error(err);
+            lua_call_object_function(err, L, this, "reload");
             last_check = now;
         }
         lua_settop(L, top);
