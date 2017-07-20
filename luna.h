@@ -60,6 +60,14 @@ inline void native_to_lua(lua_State* L, const char* v) { lua_pushstring(L, v); }
 inline void native_to_lua(lua_State* L, char* v) { lua_pushstring(L, v); }
 inline void native_to_lua(lua_State* L, const std::string& v) { lua_pushstring(L, v.c_str()); }
 
+inline int lua_normal_index(lua_State* L, int idx)
+{
+	int top = lua_gettop(L);
+	if (idx < 0 && -idx <= top)
+		return idx + top + 1;
+	return idx;
+}
+
 using lua_global_function = std::function<int(lua_State*)>;
 using lua_object_function = std::function<int(void*, lua_State*)>;
 
@@ -376,10 +384,7 @@ int lua_object_gc(lua_State* L)
 {
     T* obj = lua_to_object<T*>(L, 1);
     if (obj == nullptr)
-    {
-        perror("__gc error: nullptr !");
         return 0;
-    }
     lua_handle_gc(obj);
     return 0;
 }
@@ -469,11 +474,41 @@ void lua_push_object(lua_State* L, T obj)
         }
         lua_setmetatable(L, -2);
 
-        // stack: __objects__, tab
-        lua_pushvalue(L, -1);
-        lua_rawsetp(L, -3, obj);
-    }
-    lua_remove(L, -2);
+		// stack: __objects__, tab
+		lua_pushvalue(L, -1);
+		lua_rawsetp(L, -3, obj);
+	}
+	lua_remove(L, -2);
+}
+
+template <typename T>
+void lua_unref_object(lua_State* L, T obj)
+{
+    if (obj == nullptr)
+        return;
+
+    lua_getfield(L, LUA_REGISTRYINDEX, "__objects__");
+	if (!lua_istable(L, -1))
+	{
+		lua_pop(L, 1);
+		return;
+	}
+
+    // stack: __objects__
+    if (lua_rawgetp(L, -1, obj) != LUA_TTABLE)
+	{
+		lua_pop(L, 2);
+		return;
+	}
+
+	// stack: __objects__, __shadow_object__
+    lua_pushstring(L, "__pointer__");
+    lua_pushnil(L);
+    lua_rawset(L, -3);
+
+    lua_pushnil(L);
+    lua_rawsetp(L, -3, obj);
+	lua_pop(L, 2);
 }
 
 template<typename T>
@@ -490,13 +525,17 @@ T lua_to_object(lua_State* L, int idx)
     static_assert(has_meta_data<typename std::remove_pointer<T>::type>::value, "T should be declared export !");
     static_assert(std::is_final<typename std::remove_pointer<T>::type>::value, "T should be declared final !");
     T obj = nullptr;
-     if (lua_istable(L, idx))
-     {
-         lua_getfield(L, idx, "__pointer__");
-         obj = (T)lua_touserdata(L, -1);
-         lua_pop(L, 1);
-     }
-     return obj;
+
+	idx = lua_normal_index(L, idx);
+
+	if (lua_istable(L, idx))
+	{
+		lua_pushstring(L, "__pointer__");
+		lua_rawget(L, idx);
+		obj = (T)lua_touserdata(L, -1);
+		lua_pop(L, 1);
+	}
+	return obj;
 }
 
 #define DECLARE_LUA_CLASS(ClassName)    \
@@ -589,7 +628,6 @@ void lua_register_function(lua_State* L, const char* name, T func)
     lua_setglobal(L, name);
 }
 
-
 inline bool lua_get_global_function(lua_State* L, const char function[])
 {
     lua_getglobal(L, function);
@@ -601,10 +639,7 @@ bool lua_get_table_function(lua_State* L, const char table[], const char functio
 template <typename T>
 void lua_set_table_function(lua_State* L, int idx, const char name[], T func)
 {
-    if (idx < 0)
-    {
-        idx = lua_gettop(L) + idx + 1;
-    }
+    idx = lua_normal_index(L, idx);
     lua_push_function(L, func);
     lua_setfield(L, idx, name);
 }
