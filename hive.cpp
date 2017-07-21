@@ -143,7 +143,7 @@ hive.reload = function()
     local now = os.time();
     for filename, filenode in pairs(hive.files) do
         local filetime = hive.get_file_time(filenode.path);
-        if filetime ~= filenode.time and filetime ~= 0 and now > filetime + 1 then
+        if filetime ~= filenode.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
             filenode.time = filetime;
             do_load(filename, filenode.path, filenode.env);
         end
