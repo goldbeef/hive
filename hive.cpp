@@ -192,17 +192,17 @@ void hive_app::run(int argc, const char* argv[])
     std::string err;
     int top = lua_gettop(L);
 
-    lua_call_global_function(err, L, "import", std::tie(), filename);
+    lua_call_global_function(L, nullptr, "import", std::tie(), filename);
 
     while (lua_get_object_function(L, this, "run"))
     {
-        if(!lua_call_function(err, L, 0, 0))
+        if(!lua_call_function(L, &err, 0, 0))
             error_exit(err);
 
         int64_t now = ::get_time_ms();
         if (now > last_check + m_reload_time)
         {
-            lua_call_object_function(err, L, this, "reload");
+            lua_call_object_function(L, nullptr, this, "reload");
             last_check = now;
         }
         lua_settop(L, top);

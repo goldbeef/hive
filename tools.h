@@ -35,24 +35,17 @@ inline void sleep_ms(int ms) { std::this_thread::sleep_for(std::chrono::millisec
 
 time_t get_file_time(const char* file_name);
 
-template <typename T, int N>
-void safe_cpy(T (&buffer)[N], const T* str)
+template <int N>
+void safe_cpy(char (&buffer)[N], const char* str)
 {
     if (str == nullptr)
     {
-        buffer[0] = 0;
+        buffer[0] = '\0';
         return;
     }
 
-    int n = 0;
-    while (n < N && *str)
-    {
-        buffer[n++] = *str++;
-    }
-
-    if (n >= N)
-        n--;
-    buffer[n] = 0;
+	strncpy(buffer, str, N);
+    buffer[N - 1] = '\0';
 }
 
 #ifdef _MSC_VER
