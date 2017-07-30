@@ -102,7 +102,7 @@ void hive_app::set_signal(int n)
 static const char* g_sandbox = u8R"__(
 hive.files = {};
 hive.meta = {__index=function(t, k) return _G[k]; end};
-hive.print = print;
+hive.print = function(...) end; --do nothing
 
 local do_load = function(filename, real_path, env)
     local trunk, msg = loadfile(real_path, "bt", env);
