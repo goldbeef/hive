@@ -5,11 +5,24 @@ hive是一个简单的LUA应用框架,目前基于LUA 5.3.4.
 
 ## 编译环境
 
-luna同时支持Windows, Linux, MacOS三平台,编译器必须支持C++14.  
+luna同时支持Windows, Linux, MacOS三平台,编译器必须支持C++14,需要安装cmake.  
 
-- Windows: Visual studio 2015以上版本,需要自行编译lua的dll库,或者用win64目录下的库文件.
+- Windows: Visual studio 2015以上版本,需要自行编译lua的dll库.
 - MacOS: 需要自行编译安装lua.
 - Linux: 需要自行编译安装lua.
+
+在编译hive之前，应先编译安装lua,以及luna库：
+```sh
+cd luna
+mkdir build
+cd build
+cmake ..
+make
+# 注意,可以不用install,cmake会自动找到luna编译目录
+make install
+```
+
+然后到hive目录执行一样的make流程即可,注意执行时需要luna库在当前目录下.
 
 ## 文件沙盒及文件热加载
 
