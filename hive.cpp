@@ -10,6 +10,7 @@
 #include <locale>
 #include <stdint.h>
 #include <signal.h>
+#include <err.h>
 #include "hive.h"
 #include "tools.h"
 
@@ -104,39 +105,58 @@ hive.files = {};
 hive.meta = {__index=function(t, k) return _G[k]; end};
 hive.print = function(...) end; --do nothing
 
-local do_load = function(filename, real_path, env)
-    local trunk, msg = loadfile(real_path, "bt", env);
+local try_load = function(filename, node)
+    local real_path = node.path;
+    local trunk, msg = loadfile(real_path, "bt", node.env);
     if not trunk then
         hive.print(string.format("load file: %s ... ... [failed]", filename));
         hive.print(msg);
-        return nil;
+        return;
     end
 
     local ok, err = pcall(trunk);
     if not ok then
         hive.print(string.format("exec file: %s ... ... [failed]", filename));
         hive.print(err);
-        return nil;
+        return;
     end
 
     hive.print(string.format("load file: %s ... ... [ok]", filename));
-    return env;
 end
 
-function import(filename)
-    local file_module = hive.files[filename];
-    if file_module then
-        return file_module.env;
+local get_filenode = function(filename)
+    local filenode = hive.files[filename];
+    if filenode then
+        return filenode;
     end
 
-	local root_path = os.getenv("LUA_ROOT");
-	local real_path = root_path and root_path..filename or filename;
+    local root_path = os.getenv("LUA_ROOT");
+    local real_path = root_path and root_path..filename or filename;
 
     local env = {};
     setmetatable(env, hive.meta);
-    hive.files[filename] = {time=hive.get_file_time(real_path), env=env, path=real_path};
+    filenode = {time=hive.get_file_time(real_path), env=env, path=real_path};
+    hive.files[filename] = filenode; 
+    return filenode;
+end
 
-    return do_load(filename, real_path, env);
+hive.import = function(filename)
+    local node = get_filenode(filename);
+    local trunk, code_err = loadfile(node.path, "bt", node.env);
+    if not trunk then
+        error(code_err);
+    end
+
+    local ok, exec_err = pcall(trunk);
+    if not ok then
+        error(exec_err);
+    end
+end
+
+function import(filename)
+    local node = get_filenode(filename);
+    try_load(filename, node);
+    return node.env;
 end
 
 hive.reload = function()
@@ -145,27 +165,23 @@ hive.reload = function()
         local filetime = hive.get_file_time(filenode.path);
         if filetime ~= filenode.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
             filenode.time = filetime;
-            do_load(filename, filenode.path, filenode.env);
+            try_load(filename, filenode);
         end
     end
 end
 )__";
 
 
-void hive_app::error_exit(const std::string& err)
+void hive_app::die(const std::string& err)
 {
-    char path[512];
-    int ret = snprintf(path, sizeof(path), "%s.err", m_entry.c_str());
-    if (ret > 0 && ret < (int)sizeof(path))
+    std::string path = m_entry + ".err";
+    FILE* file = fopen(path.c_str(), "w");
+    if (file != nullptr)
     {
-        FILE* file = fopen(path, "w");
-        if (file != nullptr)
-        {
-            fwrite(err.c_str(), err.length(), 1, file);
-            fclose(file);
-        }
+        fwrite(err.c_str(), err.length(), 1, file);
+        fclose(file);
     }
-    exit(1);
+    errx(1, "%s", err.c_str());
 }
 
 void hive_app::run(int argc, const char* argv[])
@@ -192,12 +208,13 @@ void hive_app::run(int argc, const char* argv[])
     std::string err;
     int top = lua_gettop(L);
 
-    lua_call_global_function(L, nullptr, "import", std::tie(), filename);
+    if(!lua_call_object_function(L, &err, this, "import", std::tie(), filename))
+        die(err);
 
     while (lua_get_object_function(L, this, "run"))
     {
         if(!lua_call_function(L, &err, 0, 0))
-            error_exit(err);
+            die(err);
 
         int64_t now = ::get_time_ms();
         if (now > last_check + m_reload_time)
