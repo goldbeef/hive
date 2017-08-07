@@ -19,7 +19,7 @@ int main(int argc, const char* argv[])
 usage: hive program_entry.lua ...
 )--";
 		printf(fmt, MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
-        return 1;
+        return 0;
     }
 
     g_app = new hive_app();
