@@ -15,7 +15,10 @@ int main(int argc, const char* argv[])
 
     if (argc < 2)
     {
-        printf("hive %d.%d.%d\nusage:\nhive program_entry.lua ...\n", MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
+        const char* fmt = R"--(hive %d.%d.%d https://github.com/trumanzhao/hive
+usage: hive program_entry.lua ...
+)--";
+		printf(fmt, MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
         return 1;
     }
 
