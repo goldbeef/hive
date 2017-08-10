@@ -135,13 +135,19 @@ local get_filenode = function(filename)
 
     local env = {};
     setmetatable(env, hive.meta);
-    filenode = {time=hive.get_file_time(real_path), env=env, path=real_path};
+    filenode = {env=env, path=real_path};
     hive.files[filename] = filenode; 
     return filenode;
 end
 
 hive.import = function(filename)
     local node = get_filenode(filename);
+    if node.time then
+        return node.env;
+    end
+        
+    node.time = hive.get_file_time(node.path);
+
     local trunk, code_err = loadfile(node.path, "bt", node.env);
     if not trunk then
         error(code_err);
@@ -151,11 +157,16 @@ hive.import = function(filename)
     if not ok then
         error(exec_err);
     end
+
+    return node.env;
 end
 
 function import(filename)
     local node = get_filenode(filename);
-    try_load(filename, node);
+    if not node.time then 
+        node.time = hive.get_file_time(node.path);
+        try_load(filename, node);
+    end
     return node.env;
 end
 
@@ -170,7 +181,6 @@ hive.reload = function()
     end
 end
 )__";
-
 
 void hive_app::die(const std::string& err)
 {
