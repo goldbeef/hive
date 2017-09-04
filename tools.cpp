@@ -90,7 +90,7 @@ static bool is_abspath_path(const char* path)
 {
 #ifdef _WIN32
     int drive = tolower(path[0]);
-    return drive >= 'a' && drive <= z && path[1] == ':';
+    return drive >= 'a' && drive <= 'z' && path[1] == ':';
 #else
     return path[0] == '/';
 #endif
