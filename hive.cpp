@@ -41,8 +41,6 @@ EXPORT_LUA_FUNCTION(default_signal)
 EXPORT_LUA_FUNCTION(ignore_signal)
 EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
-EXPORT_LUA_INT(m_archive_buffer_size)
-EXPORT_LUA_INT(m_archive_lz_threshold)
 EXPORT_LUA_STD_STR_R(m_entry)
 EXPORT_CLASS_END()
 
@@ -61,13 +59,13 @@ time_t hive_app::get_file_time(const char* filename)
 
 int hive_app::get_full_path(lua_State* L)
 {
-	const char* path = lua_tostring(L, 1);
+    const char* path = lua_tostring(L, 1);
     std::string fullpath;
-	if (path != nullptr && ::get_full_path(fullpath, path))
-	{
-		lua_pushstring(L, fullpath.c_str());
-	}
-	return 1;
+    if (path != nullptr && ::get_full_path(fullpath, path))
+    {
+        lua_pushstring(L, fullpath.c_str());
+    }
+    return 1;
 }
 
 int64_t hive_app::get_time_ms()
@@ -138,7 +136,7 @@ end
 
 local get_filenode = function(filename)
     local rootpath = os.getenv("LUA_ROOT");
-	local withroot = rootpath and hive.get_full_path(rootpath).."/"..filename or filename;
+    local withroot = rootpath and hive.get_full_path(rootpath).."/"..filename or filename;
     local fullpath = hive.get_full_path(withroot) or withroot;
 
     local node = hive.files[fullpath];

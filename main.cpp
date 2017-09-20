@@ -18,7 +18,7 @@ int main(int argc, const char* argv[])
         const char* fmt = R"--(hive %d.%d.%d https://github.com/trumanzhao/hive
 usage: hive program_entry.lua ...
 )--";
-		printf(fmt, MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
+        printf(fmt, MAJOR_VERSION_NUMBER, MINOR_VERSION_NUMBER, REVISION_NUMBER);
         return 0;
     }
 

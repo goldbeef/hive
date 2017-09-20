@@ -44,7 +44,7 @@ void safe_cpy(char (&buffer)[N], const char* str)
         return;
     }
 
-	strncpy(buffer, str, N);
+    strncpy(buffer, str, N);
     buffer[N - 1] = '\0';
 }
 
