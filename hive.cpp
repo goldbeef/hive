@@ -10,7 +10,6 @@
 #include <locale>
 #include <stdint.h>
 #include <signal.h>
-#include <err.h>
 #include "hive.h"
 #include "tools.h"
 
@@ -218,7 +217,8 @@ void hive_app::die(const std::string& err)
         fwrite(err.c_str(), err.length(), 1, file);
         fclose(file);
     }
-    errx(1, "%s", err.c_str());
+    fprintf(stderr,"%s", err.c_str());
+    exit(1);
 }
 
 void hive_app::run(int argc, const char* argv[])
