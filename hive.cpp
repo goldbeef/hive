@@ -93,7 +93,7 @@ void hive_app::daemon()
     setsid();
     umask(0);
     
-    int null = open("/dev/null", O_WRONLY); 
+    int null = open("/dev/null", O_RDWR); 
     if (null != -1)
     {
         dup2(null, STDIN_FILENO);
