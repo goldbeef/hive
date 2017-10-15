@@ -14,10 +14,6 @@
 #include "hive.h"
 #include "tools.h"
 
-#ifdef _MSC_VER
-int daemon(int nochdir, int noclose) { return 0; }
-#endif
-
 hive_app* g_app = nullptr;
 
 static void on_signal(int signo)
@@ -73,10 +69,30 @@ void hive_app::sleep_ms(int ms)
     ::sleep_ms(ms);
 }
 
-int hive_app::daemon(int nochdir, int noclose)
+#ifdef _MSC_VER
+void hive_app::daemon() { }
+#endif
+
+#if defined(__linux) || defined(__APPLE__)
+void hive_app::daemon()
 {
-    return ::daemon(nochdir, noclose);
+    pid_t pid = fork();
+    if (pid != 0)
+        exit(0);
+
+    setsid();
+    umask(0);
+    
+    int null = open("/dev/null", O_WRONLY); 
+    if (null != -1)
+    {
+        dup2(null, STDIN_FILENO);
+        dup2(null, STDOUT_FILENO);
+        dup2(null, STDERR_FILENO);
+        close(null);
+    }
 }
+#endif
 
 void hive_app::register_signal(int n)
 {

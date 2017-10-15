@@ -21,7 +21,7 @@ public:
     int64_t get_time_ms();
     int64_t get_time_ns();
     void sleep_ms(int ms);
-    int daemon(int nochdir, int noclose);
+    void daemon();
     void register_signal(int n);
     void default_signal(int n);
     void ignore_signal(int n);
