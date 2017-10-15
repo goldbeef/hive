@@ -17,7 +17,8 @@ public:
     hive_app() { }
     ~hive_app() { }
     int get_version(lua_State* L);
-    time_t get_file_time(const char* file_name);
+    time_t get_file_time(const char* filename);
+    int get_full_path(lua_State* L);
     int64_t get_time_ms();
     int64_t get_time_ns();
     void sleep_ms(int ms);
@@ -35,8 +36,6 @@ public:
 private:
     uint64_t m_signal = 0;
     int m_reload_time = 2000;
-    int m_archive_buffer_size = USHRT_MAX;
-    int m_archive_lz_threshold = INT_MAX;
     std::string m_entry;
 };
 

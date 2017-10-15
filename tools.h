@@ -5,7 +5,7 @@
 
 #pragma once
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <time.h>
 #include <direct.h>
 #include <windows.h>
@@ -44,11 +44,11 @@ void safe_cpy(char (&buffer)[N], const char* str)
         return;
     }
 
-	strncpy(buffer, str, N);
+    strncpy(buffer, str, N);
     buffer[N - 1] = '\0';
 }
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 inline struct tm* localtime_r(const time_t* timep, struct tm* result)
 {
     errno_t nErr = localtime_s(result, timep);
@@ -56,7 +56,7 @@ inline struct tm* localtime_r(const time_t* timep, struct tm* result)
 }
 #endif
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 inline bool make_dir(const char cszDir[]) { return (_mkdir(cszDir) != -1); }
 #endif
 
@@ -65,7 +65,7 @@ inline bool make_dir(const char cszDir[]) { return (mkdir(cszDir, 0777) != -1); 
 #endif
 
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 inline uint64_t get_thread_id() { return GetCurrentThreadId(); }
 #endif
 
@@ -82,3 +82,8 @@ constexpr int _countof(T(&_array)[N]) { return N; }
 
 char* get_error_string(char buffer[], int len, int no);
 void get_error_string(std::string& err, int no);
+
+
+bool get_full_path(std::string& fullpath, const char* path);
+
+

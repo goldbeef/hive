@@ -27,6 +27,7 @@ static void on_signal(int signo)
 EXPORT_CLASS_BEGIN(hive_app)
 EXPORT_LUA_FUNCTION(get_version)
 EXPORT_LUA_FUNCTION(get_file_time)
+EXPORT_LUA_FUNCTION(get_full_path)
 EXPORT_LUA_FUNCTION(get_time_ms)
 EXPORT_LUA_FUNCTION(get_time_ns)
 EXPORT_LUA_FUNCTION(sleep_ms)
@@ -36,8 +37,6 @@ EXPORT_LUA_FUNCTION(default_signal)
 EXPORT_LUA_FUNCTION(ignore_signal)
 EXPORT_LUA_INT64(m_signal)
 EXPORT_LUA_INT(m_reload_time)
-EXPORT_LUA_INT(m_archive_buffer_size)
-EXPORT_LUA_INT(m_archive_lz_threshold)
 EXPORT_LUA_STD_STR_R(m_entry)
 EXPORT_CLASS_END()
 
@@ -49,9 +48,20 @@ int hive_app::get_version(lua_State* L)
     return 3;
 }
 
-time_t hive_app::get_file_time(const char* file_name)
+time_t hive_app::get_file_time(const char* filename)
 {
-    return ::get_file_time(file_name);
+    return ::get_file_time(filename);
+}
+
+int hive_app::get_full_path(lua_State* L)
+{
+    const char* path = lua_tostring(L, 1);
+    std::string fullpath;
+    if (path != nullptr && ::get_full_path(fullpath, path))
+    {
+        lua_pushstring(L, fullpath.c_str());
+    }
+    return 1;
 }
 
 int64_t hive_app::get_time_ms()
@@ -121,44 +131,51 @@ hive.files = {};
 hive.meta = {__index=function(t, k) return _G[k]; end};
 hive.print = function(...) end; --do nothing
 
-local try_load = function(filename, node)
-    local real_path = node.path;
-    local trunk, msg = loadfile(real_path, "bt", node.env);
+local try_load = function(node)
+    local fullpath = node.fullpath;
+    local trunk, msg = loadfile(fullpath, "bt", node.env);
     if not trunk then
-        hive.print(string.format("load file: %s ... ... [failed]", filename));
+        hive.print(string.format("load file: %s ... ... [failed]", node.filename));
         hive.print(msg);
         return;
     end
 
     local ok, err = pcall(trunk);
     if not ok then
-        hive.print(string.format("exec file: %s ... ... [failed]", filename));
+        hive.print(string.format("exec file: %s ... ... [failed]", node.filename));
         hive.print(err);
         return;
     end
 
-    hive.print(string.format("load file: %s ... ... [ok]", filename));
+    hive.print(string.format("load file: %s ... ... [ok]", node.filename));
 end
 
 local get_filenode = function(filename)
-    local filenode = hive.files[filename];
-    if filenode then
-        return filenode;
-    end
+    local rootpath = os.getenv("LUA_ROOT");
+    local withroot = rootpath and hive.get_full_path(rootpath).."/"..filename or filename;
+    local fullpath = hive.get_full_path(withroot) or withroot;
 
-    local root_path = os.getenv("LUA_ROOT");
-    local real_path = root_path and root_path..filename or filename;
+    local node = hive.files[fullpath];
+    if node then
+        return node;
+    end
 
     local env = {};
     setmetatable(env, hive.meta);
-    filenode = {time=hive.get_file_time(real_path), env=env, path=real_path};
-    hive.files[filename] = filenode; 
-    return filenode;
+    node = {env=env, fullpath=fullpath, filename=filename};
+    hive.files[fullpath] = node;
+    return node;
 end
 
 hive.import = function(filename)
     local node = get_filenode(filename);
-    local trunk, code_err = loadfile(node.path, "bt", node.env);
+    if node.time then
+        return node.env;
+    end
+
+    node.time = hive.get_file_time(node.fullpath);
+
+    local trunk, code_err = loadfile(node.fullpath, "bt", node.env);
     if not trunk then
         error(code_err);
     end
@@ -167,26 +184,30 @@ hive.import = function(filename)
     if not ok then
         error(exec_err);
     end
+
+    return node.env;
 end
 
 function import(filename)
     local node = get_filenode(filename);
-    try_load(filename, node);
+    if not node.time then
+        node.time = hive.get_file_time(node.fullpath);
+        try_load(node);
+    end
     return node.env;
 end
 
 hive.reload = function()
     local now = os.time();
-    for filename, filenode in pairs(hive.files) do
-        local filetime = hive.get_file_time(filenode.path);
-        if filetime ~= filenode.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
-            filenode.time = filetime;
-            try_load(filename, filenode);
+    for path, node in pairs(hive.files) do
+        local filetime = hive.get_file_time(node.fullpath);
+        if filetime ~= node.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
+            node.time = filetime;
+            try_load(node);
         end
     end
 end
 )__";
-
 
 void hive_app::die(const std::string& err)
 {
