@@ -39,9 +39,9 @@ make
 count = count or 0;
 function hive.run()
     count = count + 1;	
-	if count > 10 then
-		hive.run = nil;
-	end
+    if count > 10 then
+        hive.run = nil;
+    end
     hive.sleep_ms(2000);	
 end
 ```
