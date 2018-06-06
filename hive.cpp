@@ -254,7 +254,7 @@ void hive_app::run(int argc, const char* argv[])
             die(err);
 
         int64_t now = ::get_time_ms();
-        if (now > last_check + m_reload_time)
+        if (m_reload_time > 0 && now > last_check + m_reload_time)
         {
             lua_call_object_function(L, nullptr, this, "reload");
             last_check = now;
