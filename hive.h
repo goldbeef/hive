@@ -35,7 +35,7 @@ public:
     DECLARE_LUA_CLASS(hive_app);
 private:
     uint64_t m_signal = 0;
-    int m_reload_time = 2;
+    int m_reload_time = 3000;
     std::string m_entry;
 };
 
