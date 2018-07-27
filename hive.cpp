@@ -198,11 +198,16 @@ end
 
 hive.reload = function()
     local now = os.time();
-    for path, node in pairs(hive.files) do
-        local filetime = hive.get_file_time(node.fullpath);
-        if filetime ~= node.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
-            node.time = filetime;
-            try_load(node);
+    local update = true;
+    while update do 
+        update = false;
+        for path, node in pairs(hive.files) do
+            local filetime = hive.get_file_time(node.fullpath);
+            if filetime ~= node.time and filetime ~= 0 and math.abs(now - filetime) > 1 then
+                node.time = filetime;
+                update = true;
+                try_load(node);
+            end
         end
     end
 end
