@@ -9,7 +9,7 @@
 
  const int MAJOR_VERSION_NUMBER = 0;
  const int MINOR_VERSION_NUMBER = 1;
- const int REVISION_NUMBER = 0;
+ const int REVISION_NUMBER = 1;
 
 class hive_app final
 {
@@ -35,7 +35,7 @@ public:
     DECLARE_LUA_CLASS(hive_app);
 private:
     uint64_t m_signal = 0;
-    int m_reload_time = 2000;
+    int m_reload_time = 2;
     std::string m_entry;
 };
 
