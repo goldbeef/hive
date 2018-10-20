@@ -20,6 +20,11 @@ endif()
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" )
+    include_directories("/usr/local/include")
+    link_directories("/usr/local/lib")
+endif()
+
 add_executable(hive ${hive_src})
 target_link_libraries(hive luna lua dl Threads::Threads)
 
