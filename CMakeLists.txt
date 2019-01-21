@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(hive)
 aux_source_directory(. hive_src)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 include(CheckCXXCompilerFlag)
