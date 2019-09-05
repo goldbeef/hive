@@ -4,7 +4,7 @@ target_type = execute
 define_macros =
 include_dir = ../luna
 # 依赖库列表,空格分开
-lib = lua luna
+lib = lua luna dl
 # 最终产品目录:
 # 注意,只是对可执行文件和动态库而言,静态库忽略此项
 target_dir = .
