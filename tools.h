@@ -36,10 +36,8 @@ inline void sleep_ms(int ms) { std::this_thread::sleep_for(std::chrono::millisec
 time_t get_file_time(const char* file_name);
 
 template <int N>
-void safe_cpy(char (&buffer)[N], const char* str)
-{
-    if (str == nullptr)
-    {
+void safe_cpy(char (&buffer)[N], const char* str) {
+    if (str == nullptr) {
         buffer[0] = '\0';
         return;
     }
@@ -49,8 +47,7 @@ void safe_cpy(char (&buffer)[N], const char* str)
 }
 
 #ifdef _WIN32
-inline struct tm* localtime_r(const time_t* timep, struct tm* result)
-{
+inline struct tm* localtime_r(const time_t* timep, struct tm* result) {
     errno_t nErr = localtime_s(result, timep);
     return (nErr == 0) ? result : nullptr;
 }

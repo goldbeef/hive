@@ -26,8 +26,7 @@
 #include <list>
 #include "tools.h"
 
-time_t get_file_time(const char* file_name)
-{
+time_t get_file_time(const char* file_name) {
     if (file_name == nullptr)
         return 0;
 
@@ -45,8 +44,7 @@ time_t get_file_time(const char* file_name)
 #endif
 }
 
-char* get_error_string(char buffer[], int len, int no)
-{
+char* get_error_string(char buffer[], int len, int no) {
     buffer[0] = '\0';
 
 #ifdef _WIN32
@@ -60,34 +58,28 @@ char* get_error_string(char buffer[], int len, int no)
     return buffer;
 }
 
-void get_error_string(std::string& err, int no)
-{
+void get_error_string(std::string& err, int no) {
     char txt[MAX_ERROR_TXT];
     get_error_string(txt, sizeof(txt), no);
     err = txt;
 }
 
-void path_to_nodes(std::list<std::string>& nodes, const char* path)
-{
+void path_to_nodes(std::list<std::string>& nodes, const char* path) {
        const char* token = path;
        const char* pos = path;
-       while (true)
-       {
-              if (*pos == '\\' || *pos == '/' || *pos == '\0')
-              {
-                     if (pos > token)
-                     {
-                           nodes.push_back(std::string(token, pos));
-                     }
-                     token = pos + 1;
-              }
-              if (*pos++ == '\0')
-                     break;
+       while (true) {
+                if (*pos == '\\' || *pos == '/' || *pos == '\0') {
+                    if (pos > token) {
+                        nodes.push_back(std::string(token, pos));
+                    }
+                    token = pos + 1;
+                }
+                if (*pos++ == '\0')
+                    break;
        }
 }
 
-static bool is_abspath_path(const char* path)
-{
+static bool is_abspath_path(const char* path) {
 #ifdef _WIN32
     int drive = tolower(path[0]);
     return drive >= 'a' && drive <= 'z' && path[1] == ':';
@@ -98,12 +90,10 @@ static bool is_abspath_path(const char* path)
 
 static const int MAX_PATH_SIZE = 1024;
 
-bool get_full_path(std::string& fullpath, const char* path)
-{
+bool get_full_path(std::string& fullpath, const char* path) {
     std::list<std::string> nodes;
 
-    if (!is_abspath_path(path))
-    {
+    if (!is_abspath_path(path)) {
         char cwd[MAX_PATH_SIZE];
 #ifdef _WIN32
         if (!_getcwd(cwd, sizeof(cwd)))
@@ -119,28 +109,23 @@ bool get_full_path(std::string& fullpath, const char* path)
     std::string dot = ".";
     std::string dot2 = "..";
     std::list<std::string> tokens;
-    for (auto& node : nodes)
-    {
-        if (node == dot2)
-        {
+    for (auto& node : nodes) {
+        if (node == dot2) {
             if (tokens.empty())
                 return false;
             tokens.pop_back();
             continue;
         }
 
-        if (node != dot)
-        {
+        if (node != dot) {
             tokens.push_back(node);
         }
     }
 
     fullpath.reserve(MAX_PATH_SIZE);
-    for (auto& token : tokens)
-    {
+    for (auto& token : tokens) {
 #ifdef _WIN32
-        if (!fullpath.empty())
-        {
+        if (!fullpath.empty()) {
             fullpath.append("\\");
         }
 #else

@@ -15,10 +15,8 @@
 
 hive_app* g_app = nullptr;
 
-static void on_signal(int signo)
-{
-    if (g_app)
-    {
+static void on_signal(int signo) {
+    if (g_app) {
         g_app->set_signal(signo);
     }
 }
@@ -39,42 +37,35 @@ LUA_EXPORT_PROPERTY(m_reload_time)
 LUA_EXPORT_PROPERTY_READONLY(m_entry)
 LUA_EXPORT_CLASS_END()
 
-int hive_app::get_version(lua_State* L)
-{
+int hive_app::get_version(lua_State* L) {
     lua_pushinteger(L, MAJOR_VERSION_NUMBER);
     lua_pushinteger(L, MINOR_VERSION_NUMBER);
     lua_pushinteger(L, REVISION_NUMBER);
     return 3;
 }
 
-time_t hive_app::get_file_time(const char* filename)
-{
+time_t hive_app::get_file_time(const char* filename) {
     return ::get_file_time(filename);
 }
 
-int hive_app::get_full_path(lua_State* L)
-{
+int hive_app::get_full_path(lua_State* L) {
     const char* path = lua_tostring(L, 1);
     std::string fullpath;
-    if (path != nullptr && ::get_full_path(fullpath, path))
-    {
+    if (path != nullptr && ::get_full_path(fullpath, path)) {
         lua_pushstring(L, fullpath.c_str());
     }
     return 1;
 }
 
-int64_t hive_app::get_time_ms()
-{
+int64_t hive_app::get_time_ms() {
     return ::get_time_ms();
 }
 
-int64_t hive_app::get_time_ns()
-{
+int64_t hive_app::get_time_ns() {
     return ::get_time_ns();
 }
 
-void hive_app::sleep_ms(int ms)
-{
+void hive_app::sleep_ms(int ms) {
     ::sleep_ms(ms);
 }
 
@@ -83,8 +74,7 @@ void hive_app::daemon() { }
 #endif
 
 #if defined(__linux) || defined(__APPLE__)
-void hive_app::daemon()
-{
+void hive_app::daemon() {
     pid_t pid = fork();
     if (pid != 0)
         exit(0);
@@ -93,8 +83,7 @@ void hive_app::daemon()
     umask(0);
     
     int null = open("/dev/null", O_RDWR); 
-    if (null != -1)
-    {
+    if (null != -1) {
         dup2(null, STDIN_FILENO);
         dup2(null, STDOUT_FILENO);
         dup2(null, STDERR_FILENO);
@@ -103,23 +92,19 @@ void hive_app::daemon()
 }
 #endif
 
-void hive_app::register_signal(int n)
-{
+void hive_app::register_signal(int n) {
     signal(n, on_signal);
 }
 
-void hive_app::default_signal(int n)
-{
+void hive_app::default_signal(int n) {
     signal(n, SIG_DFL);
 }
 
-void hive_app::ignore_signal(int n)
-{
+void hive_app::ignore_signal(int n) {
     signal(n, SIG_IGN);
 }
 
-void hive_app::set_signal(int n)
-{
+void hive_app::set_signal(int n) {
     uint64_t mask = 1;
     mask <<= n;
     m_signal |= mask;
@@ -213,12 +198,10 @@ hive.reload = function()
 end
 )__";
 
-void hive_app::die(const std::string& err)
-{
+void hive_app::die(const std::string& err) {
     std::string path = m_entry + ".err";
     FILE* file = fopen(path.c_str(), "w");
-    if (file != nullptr)
-    {
+    if (file != nullptr) {
         fwrite(err.c_str(), err.length(), 1, file);
         fclose(file);
     }
@@ -226,8 +209,7 @@ void hive_app::die(const std::string& err)
     exit(1);
 }
 
-void hive_app::run(int argc, const char* argv[])
-{
+void hive_app::run(int argc, const char* argv[]) {
     lua_State* L = luaL_newstate();
     int64_t last_check = ::get_time_ms();
     const char* filename = argv[1];
@@ -238,8 +220,7 @@ void hive_app::run(int argc, const char* argv[])
     lua_push_object(L, this);
     lua_setglobal(L, "hive");
     lua_newtable(L);
-    for (int i = 1; i < argc; i++)
-    {
+    for (int i = 1; i < argc; i++) {
         lua_pushinteger(L, i - 1);
         lua_pushstring(L, argv[i]);
         lua_settable(L, -3);
@@ -253,14 +234,12 @@ void hive_app::run(int argc, const char* argv[])
     if(!lua_call_object_function(L, &err, this, "import", std::tie(), filename))
         die(err);
 
-    while (lua_get_object_function(L, this, "run"))
-    {
+    while (lua_get_object_function(L, this, "run")) {
         if(!lua_call_function(L, &err, 0, 0))
             die(err);
 
         int64_t now = ::get_time_ms();
-        if (m_reload_time > 0 && now > last_check + m_reload_time)
-        {
+        if (m_reload_time > 0 && now > last_check + m_reload_time) {
             lua_call_object_function(L, nullptr, this, "reload");
             last_check = now;
         }

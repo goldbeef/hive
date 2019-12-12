@@ -11,8 +11,7 @@
  const int MINOR_VERSION_NUMBER = 1;
  const int REVISION_NUMBER = 1;
 
-class hive_app final
-{
+class hive_app final {
 public:
     hive_app() { }
     ~hive_app() { }
