@@ -2,7 +2,7 @@ product = hive
 # execute, dynamic_shared, static_shared
 target_type = execute
 define_macros =
-include_dir = ../luna
+include_dir = /usr/local/Cellar/lua/5.3.5_1/include/lua5.3 ../luna 
 # 依赖库列表,空格分开
 lib = lua luna dl
 # 最终产品目录:
