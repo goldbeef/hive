@@ -7,7 +7,7 @@ include_dir = /usr/local/Cellar/lua/5.3.5_1/include/lua5.3 ../luna
 lib = lua luna dl
 # 最终产品目录:
 # 注意,只是对可执行文件和动态库而言,静态库忽略此项
-target_dir = .
+target_dir = ./bin
 # 源码目录,注意不会递归
 src_dir_list = .
 # 依赖库目录,多个目录用空格分开:
