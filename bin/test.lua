@@ -6,6 +6,7 @@ require("base/tree");
 ct = ct or 0;
 
 function hive.run()
+    hive.default_signal(2)
     print("ct="..ct);
 	log_debug("ct=%d", ct);
     ct = ct + 1;
@@ -14,17 +15,18 @@ function hive.run()
 		hive.run = nil;
 	end
 
-    print("--------------------------------------------------")
     for k, v in pairs(hive) do
+        print("++++++++++++++++++++++++++++")
         print(k, v, type(k), type(v))
         if type(v) == "table" then
-            print("**********************************")
+            print("******************")
             for k2, v2 in pairs(v) do
-                print(k, k2, v2, type(k2), type(v2))
+                print(k .. ".k.v", k2, v2)
             end
+            print("******************")
         end
+        print("++++++++++++++++++++++++++++")
     end
-    print("--------------------------------------------------")
 
     os.execute("sleep 3")
 end
