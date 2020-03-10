@@ -287,8 +287,7 @@ void hive_app::run(int argc, const char* argv[]) {
      */
     int top = lua_gettop(L);
 
-    //this->default_signal(SIGINT);
-    this->register_signal(SIGINT);
+    //this->register_signal(SIGINT);
     //记载主lua代码逻辑
     if(!lua_call_object_function(L, &err, this, "import", std::tie(), filename))
         die(err);
@@ -306,6 +305,8 @@ void hive_app::run(int argc, const char* argv[]) {
         }
         //重置堆栈
         lua_settop(L, top);
+
+        sleep(3);
     }
 
     lua_close(L);

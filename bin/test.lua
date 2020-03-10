@@ -7,6 +7,7 @@ ct = ct or 0;
 
 function hive.run()
     hive.default_signal(2)
+    --hive.ignore_signal(2)
     print("ct="..ct);
 	log_debug("ct=%d", ct);
     ct = ct + 1;
@@ -28,7 +29,7 @@ function hive.run()
         print("++++++++++++++++++++++++++++")
     end
 
-    os.execute("sleep 3")
+    --os.execute("sleep 3") --can not sigint
 end
 
 
