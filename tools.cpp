@@ -64,6 +64,10 @@ void get_error_string(std::string& err, int no) {
     err = txt;
 }
 
+//将path拆成节点
+/*
+ * /abc/def/hig  ==> abc, def, hig
+ * */
 void path_to_nodes(std::list<std::string>& nodes, const char* path) {
        const char* token = path;
        const char* pos = path;
@@ -90,22 +94,28 @@ static bool is_abspath_path(const char* path) {
 
 static const int MAX_PATH_SIZE = 1024;
 
+//根据path， 计算fullpath
 bool get_full_path(std::string& fullpath, const char* path) {
     std::list<std::string> nodes;
 
     if (!is_abspath_path(path)) {
+        //相对路径
         char cwd[MAX_PATH_SIZE];
 #ifdef _WIN32
         if (!_getcwd(cwd, sizeof(cwd)))
             return false;
 #else
+        //获取工作目录， 解析出node
         if (!getcwd(cwd, sizeof(cwd)))
             return false;
 #endif
+        //path -> node
         path_to_nodes(nodes, cwd);
     }
 
+    //绝对路径 或者 相对 路径的后半段
     path_to_nodes(nodes, path);
+
     std::string dot = ".";
     std::string dot2 = "..";
     std::list<std::string> tokens;
