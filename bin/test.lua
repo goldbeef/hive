@@ -20,13 +20,15 @@ function hive.run()
         print("++++++++++++++++++++++++++++")
         print(k, v, type(k), type(v))
         if type(v) == "table" then
-            print("******************")
             for k2, v2 in pairs(v) do
-                print(k .. ".k.v", k2, v2)
+                print("\t k.v", k2, v2)
+                if type(v2) == "table" then
+                    for k3, v3 in pairs(v2) do
+                        print("\t\t k.v", k3, v3)
+                    end
+                end
             end
-            print("******************")
         end
-        print("++++++++++++++++++++++++++++")
     end
 
     --os.execute("sleep 10") --can not sigint
