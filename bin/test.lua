@@ -1,7 +1,10 @@
 #!./hive
 
-require("base/log");
-require("base/tree");
+--require("base/log");
+--require("base/tree");
+
+import("base/log.lua")
+import("base/tree.lua")
 
 ct = ct or 0;
 
