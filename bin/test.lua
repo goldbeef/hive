@@ -9,7 +9,8 @@ import("base/tree.lua")
 ct = ct or 0;
 
 function hive.run()
-    hive.default_signal(2)
+    hive.register_signal(2)
+    --hive.default_signal(2)
     --hive.ignore_signal(2)
     print("ct="..ct);
 	log_debug("ct=%d", ct);
@@ -19,6 +20,9 @@ function hive.run()
 		hive.run = nil;
 	end
 
+	print("signal: " .. hive.signal)
+
+	print("---------------hive table.....")
     for k, v in pairs(hive) do
         print("++++++++++++++++++++++++++++")
         print(k, v, type(k), type(v))
@@ -32,6 +36,12 @@ function hive.run()
                 end
             end
         end
+    end
+
+	print("--------------hive.meta table.....")
+    hiveMeta = getmetatable(hive)
+    for k, v in pairs(hiveMeta) do
+        print("meta.k.v", k, v, type(k), type(v))
     end
 
     --os.execute("sleep 10") --can not sigint
