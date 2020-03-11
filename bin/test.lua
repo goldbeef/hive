@@ -29,7 +29,8 @@ function hive.run()
         print("++++++++++++++++++++++++++++")
     end
 
-    --os.execute("sleep 3") --can not sigint
+    --os.execute("sleep 10") --can not sigint
+    hive.sleep_ms(3000)
 end
 
 

@@ -306,7 +306,7 @@ void hive_app::run(int argc, const char* argv[]) {
         //重置堆栈
         lua_settop(L, top);
 
-        sleep(3);
+        //sleep(3); //ok for sigint
     }
 
     lua_close(L);
