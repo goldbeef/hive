@@ -44,6 +44,9 @@ function hive.run()
         print("meta.k.v", k, v, type(k), type(v))
     end
 
+    print(hive.get_full_path("test"))
+    --local withroot = nil and hive.get_full_path(rootpath).."/"..filename or filename;
+    --local fullpath = hive.get_full_path(withroot) or withroot;
     --os.execute("sleep 10") --can not sigint
     hive.sleep_ms(3000)
 end
