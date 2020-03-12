@@ -9,8 +9,8 @@ import("base/tree.lua")
 ct = ct or 0;
 
 function hive.run()
-    hive.register_signal(2)
-    --hive.default_signal(2)
+    --hive.register_signal(2)
+    hive.default_signal(2)
     --hive.ignore_signal(2)
     print("ct="..ct);
 	log_debug("ct=%d", ct);
